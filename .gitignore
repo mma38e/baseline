@@ -1,0 +1,33 @@
+# Ignore common Ansible temporary files
+.ansible/
+*.retry
+
+# Ignore editor swap files
+*~
+*.swp
+*.swo
+
+# Ignore Python bytecode
+__pycache__/
+*.pyc
+
+# Ignore virtual environment directories
+virtualenv/
+venc/
+.venv/
+
+# Ignore logs
+*.log
+
+# Ignore sensitive files (if any, add as needed)
+# credentials.yml
+# vault.yml
+
+# Ignore Docker-related files that are not part of the build context
+# .dockerignore (if you have one, it's usually committed)
+
+# Ignore local inventory files if they contain sensitive data or are not meant for version control
+# inventory.ini (if it contains dynamic IPs or sensitive info)
+
+# Ignore any other files you don't want to commit
+# my_secret_file.txt
