@@ -1,0 +1,36 @@
+---
+- name: Install Cockpit and virtualization packages
+  ansible.builtin.dnf:
+    name:
+      - cockpit
+      - cockpit-machines
+      - qemu-kvm
+      - libvirt
+      - virt-install
+      - bridge-utils
+    state: present
+
+- name: Enable and start libvirtd service
+  ansible.builtin.systemd:
+    name: libvirtd
+    state: started
+    enabled: yes
+
+- name: Enable and start Cockpit socket
+  ansible.builtin.systemd:
+    name: cockpit.socket
+    state: started
+    enabled: yes
+
+- name: Allow Cockpit through firewall (if firewalld is active)
+  ansible.posix.firewalld:
+    port: 9090/tcp
+    permanent: yes
+    state: enabled
+    immediate: yes
+
+- name: Add user to libvirt group (if not already in it)
+  ansible.builtin.user:
+    name: "{{ ansible_user_id }}"
+    groups: libvirt
+    append: yes

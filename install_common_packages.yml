@@ -1,0 +1,69 @@
+---
+- name: Install common packages for Rocky Linux
+  hosts: rocky
+  become: yes
+  tasks:
+    - name: Update dnf cache
+      ansible.builtin.dnf:
+        update_cache: yes
+
+    - name: Install Development Tools group
+      ansible.builtin.dnf:
+        name: "@Development Tools"
+        state: present
+
+    - name: Install individual packages
+      ansible.builtin.dnf:
+        name: 
+          - git
+          - vim
+          - wget
+          - curl
+          - tmux
+          - net-tools
+          - bind-utils
+          - python3
+          - python3-pip
+          - java-11-openjdk-devel
+          - nodejs
+          - npm
+          - pciutils
+          - linux-firmware
+          - tar
+        state: present
+
+    - name: Install dnf-utils
+      ansible.builtin.dnf:
+        name: dnf-utils
+        state: present
+
+    - name: Add Docker CE repository
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/rhel/docker-ce.repo
+        dest: /etc/yum.repos.d/docker-ce.repo
+        mode: '0644'
+
+    - name: Install Docker CE and dependencies
+      ansible.builtin.dnf:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+
+    - name: Add user to docker group
+      ansible.builtin.user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
+    - name: Start and enable docker service
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Clean up dnf cache
+      ansible.builtin.command: dnf clean all

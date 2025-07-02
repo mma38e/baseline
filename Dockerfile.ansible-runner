@@ -1,0 +1,7 @@
+FROM quay.io/ansible/ansible-runner:latest
+
+USER root
+
+RUN yum install -y openssh-clients && yum clean all
+
+USER runner
